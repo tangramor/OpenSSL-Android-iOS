@@ -1,0 +1,324 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 56;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		BFF4E38F2B15966400B7C8A5 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFF4E38E2B15966400B7C8A5 /* main.cpp */; };
+		BFF4E3972B15C97400B7C8A5 /* Verifier.cpp in Sources */ = {isa = PBXBuildFile; fileRef = BFF4E3952B15C97400B7C8A5 /* Verifier.cpp */; };
+		BFF4E39C2B15CD1600B7C8A5 /* libssl.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF4E39B2B15CD0D00B7C8A5 /* libssl.a */; };
+		BFF4E39D2B15CD1F00B7C8A5 /* libcrypto.a in Frameworks */ = {isa = PBXBuildFile; fileRef = BFF4E39A2B15CD0D00B7C8A5 /* libcrypto.a */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		BFF4E3892B15966400B7C8A5 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = /usr/share/man/man1/;
+			dstSubfolderSpec = 0;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 1;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		BFF4E38B2B15966400B7C8A5 /* TestOpenssl */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = TestOpenssl; sourceTree = BUILT_PRODUCTS_DIR; };
+		BFF4E38E2B15966400B7C8A5 /* main.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = main.cpp; sourceTree = "<group>"; };
+		BFF4E3952B15C97400B7C8A5 /* Verifier.cpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.cpp; path = Verifier.cpp; sourceTree = "<group>"; };
+		BFF4E3962B15C97400B7C8A5 /* Verifier.hpp */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.cpp.h; path = Verifier.hpp; sourceTree = "<group>"; };
+		BFF4E3982B15CC4300B7C8A5 /* openssl */ = {isa = PBXFileReference; lastKnownFileType = folder; path = openssl; sourceTree = "<group>"; };
+		BFF4E39A2B15CD0D00B7C8A5 /* libcrypto.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libcrypto.a; path = TestOpenssl/openssl/libcrypto.a; sourceTree = "<group>"; };
+		BFF4E39B2B15CD0D00B7C8A5 /* libssl.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; name = libssl.a; path = TestOpenssl/openssl/libssl.a; sourceTree = "<group>"; };
+		BFF4E39E2B15D97300B7C8A5 /* MyFile.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = MyFile.txt; sourceTree = "<group>"; };
+		BFF4E39F2B15D97800B7C8A5 /* signature.bin */ = {isa = PBXFileReference; lastKnownFileType = archive.macbinary; path = signature.bin; sourceTree = "<group>"; };
+		BFF4E3A02B15D97D00B7C8A5 /* certificate.crt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = certificate.crt; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		BFF4E3882B15966400B7C8A5 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFF4E39D2B15CD1F00B7C8A5 /* libcrypto.a in Frameworks */,
+				BFF4E39C2B15CD1600B7C8A5 /* libssl.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		BFF4E3822B15966400B7C8A5 = {
+			isa = PBXGroup;
+			children = (
+				BFF4E38D2B15966400B7C8A5 /* TestOpenssl */,
+				BFF4E38C2B15966400B7C8A5 /* Products */,
+				BFF4E3992B15CD0D00B7C8A5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		BFF4E38C2B15966400B7C8A5 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				BFF4E38B2B15966400B7C8A5 /* TestOpenssl */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		BFF4E38D2B15966400B7C8A5 /* TestOpenssl */ = {
+			isa = PBXGroup;
+			children = (
+				BFF4E3A02B15D97D00B7C8A5 /* certificate.crt */,
+				BFF4E39F2B15D97800B7C8A5 /* signature.bin */,
+				BFF4E39E2B15D97300B7C8A5 /* MyFile.txt */,
+				BFF4E3982B15CC4300B7C8A5 /* openssl */,
+				BFF4E38E2B15966400B7C8A5 /* main.cpp */,
+				BFF4E3952B15C97400B7C8A5 /* Verifier.cpp */,
+				BFF4E3962B15C97400B7C8A5 /* Verifier.hpp */,
+			);
+			path = TestOpenssl;
+			sourceTree = "<group>";
+		};
+		BFF4E3992B15CD0D00B7C8A5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				BFF4E39A2B15CD0D00B7C8A5 /* libcrypto.a */,
+				BFF4E39B2B15CD0D00B7C8A5 /* libssl.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		BFF4E38A2B15966400B7C8A5 /* TestOpenssl */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = BFF4E3922B15966400B7C8A5 /* Build configuration list for PBXNativeTarget "TestOpenssl" */;
+			buildPhases = (
+				BFF4E3872B15966400B7C8A5 /* Sources */,
+				BFF4E3882B15966400B7C8A5 /* Frameworks */,
+				BFF4E3892B15966400B7C8A5 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = TestOpenssl;
+			productName = TestOpenssl;
+			productReference = BFF4E38B2B15966400B7C8A5 /* TestOpenssl */;
+			productType = "com.apple.product-type.tool";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		BFF4E3832B15966400B7C8A5 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				BuildIndependentTargetsInParallel = 1;
+				LastUpgradeCheck = 1500;
+				TargetAttributes = {
+					BFF4E38A2B15966400B7C8A5 = {
+						CreatedOnToolsVersion = 15.0.1;
+					};
+				};
+			};
+			buildConfigurationList = BFF4E3862B15966400B7C8A5 /* Build configuration list for PBXProject "TestOpenssl" */;
+			compatibilityVersion = "Xcode 14.0";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = BFF4E3822B15966400B7C8A5;
+			productRefGroup = BFF4E38C2B15966400B7C8A5 /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				BFF4E38A2B15966400B7C8A5 /* TestOpenssl */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		BFF4E3872B15966400B7C8A5 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				BFF4E38F2B15966400B7C8A5 /* main.cpp in Sources */,
+				BFF4E3972B15C97400B7C8A5 /* Verifier.cpp in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		BFF4E3902B15966400B7C8A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = macosx;
+			};
+			name = Debug;
+		};
+		BFF4E3912B15966400B7C8A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				ASSETCATALOG_COMPILER_GENERATE_SWIFT_ASSET_SYMBOL_EXTENSIONS = YES;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++20";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_QUOTED_INCLUDE_IN_FRAMEWORK_HEADER = YES;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_USER_SCRIPT_SANDBOXING = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu17;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				LOCALIZATION_PREFERS_STRING_CATALOGS = YES;
+				MACOSX_DEPLOYMENT_TARGET = 14.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = macosx;
+			};
+			name = Release;
+		};
+		BFF4E3932B15966400B7C8A5 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/TestOpenssl/openssl/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestOpenssl/openssl",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Debug;
+		};
+		BFF4E3942B15966400B7C8A5 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				HEADER_SEARCH_PATHS = "${SRCROOT}/TestOpenssl/openssl/include";
+				LIBRARY_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)/TestOpenssl/openssl",
+				);
+				PRODUCT_NAME = "$(TARGET_NAME)";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		BFF4E3862B15966400B7C8A5 /* Build configuration list for PBXProject "TestOpenssl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFF4E3902B15966400B7C8A5 /* Debug */,
+				BFF4E3912B15966400B7C8A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		BFF4E3922B15966400B7C8A5 /* Build configuration list for PBXNativeTarget "TestOpenssl" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				BFF4E3932B15966400B7C8A5 /* Debug */,
+				BFF4E3942B15966400B7C8A5 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = BFF4E3832B15966400B7C8A5 /* Project object */;
+}
