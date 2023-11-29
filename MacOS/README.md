@@ -103,7 +103,7 @@ lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/li
 
 其生成的 `include` 目录下的头文件完全一致，只需要拷贝一份即可。
 
-## 
+
 
 ## 构建 Mac 测试项目
 
@@ -382,7 +382,7 @@ clang++ -g Verifier.cpp main.cpp -o main -I /Users/tattoo/workspace/TestOpenssl/
 文件验证失败
 ```
 
-### 
+
 
 ### 编译静态库
 
