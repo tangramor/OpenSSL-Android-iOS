@@ -1,6 +1,6 @@
 # iOS
 
-需要先完成 [MacOS OpenSSL 构建](../MacOS/README.md)。
+需要先完成 [MacOS OpenSSL 构建](../MacOS/README_zh-CN.md)。
 
 ## 构建 iOS 测试项目
 
