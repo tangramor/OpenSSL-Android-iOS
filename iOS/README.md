@@ -53,6 +53,8 @@ Edite `ViewController.mm`:
 @end
 ```
 
-Compile and run the project.
+Compile and run the project:
+
+![20231130-154553@2x.png](../images/20231130-154553@2x.png)
 
 **Note**: If you are using simulator, the static library should use `libverifier-iossimulator.a`. And for real iPhone, use `libverifier-iOS.a`.

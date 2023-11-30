@@ -34,10 +34,8 @@ openssl dgst -sha256 -verify public_key.pem -signature signature.bin <要验证�
 - 签名文件：`signature.bin`
 - 证书文件：`certificate.crt`
 
-
-
 ## 分平台使用
 
-- [Android](./Android/README.md)
-- [MacOS](./MacOS/README.md)
-- [iOS](./iOS/README.md)
+- [Android](./Android/README_zh-CN.md)
+- [MacOS](./MacOS/README_zh-CN.md)
+- [iOS](./iOS/README_zh-CN.md)
