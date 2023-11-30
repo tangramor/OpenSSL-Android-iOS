@@ -1,22 +1,22 @@
-# 
-
-### [中文](./README_zh-CN.md)
-
 # iOS/MacOS
 
-The following works completed in a Macbook Pro (M1 CPU, MacOS Sonoma 14.0)
+以下操作在 Macbook Pro（M1芯片，MacOS Sonoma 14.0）上完成。
 
-## Compile OpenSSL
 
-First we need to check our local environment, execute `xcode-select -print-path`  to see if the path is correct. For me, I ran `sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer` to set correct development environment.
 
-Here we only compile for iOS, iOS simulator and MacOS. You can do similar work for other Apple hardwares.
+## 编译 OpenSSL
 
-If you met odd problem like `.../clang/15.0.0/include/inttypes.h:21:15: fatal error: 'inttypes.h' file not found` , don't panic at this time, **restart** the system may solve it...
+需要确认一下本地开发环境，比如执行 `xcode-select -print-path` ，看看路径是否正确。我这里需要运行 `sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer` 来设定正确的开发环境变量。
+
+以下只针对 **iOS 真机**、**iOS 模拟器** 和 **MacOS** 环境进行编译，其它环境可以类似操作。
+
+在编译的时候我碰到了一些编译问题，例如 `.../clang/15.0.0/include/inttypes.h:21:15: fatal error: 'inttypes.h' file not found` 这种离奇的报错。这时候不要慌，**重启**一下系统或许就解决了……
+
+
 
 ### iOS
 
-OpenSSL compile manual for iOS: https://wiki.openssl.org/index.php/Compilation_and_Installation#iOS
+OpenSSL iOS 编译指南：https://wiki.openssl.org/index.php/Compilation_and_Installation#iOS
 
 ```bash
 cd ~/workspace/openssl-3.0.12
@@ -33,18 +33,20 @@ make install
 make clean
 ```
 
-To get value of `CROSS_SDK`, you may `ls /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs`.
+这里 `CROSS_SDK` 的值可以 `ls /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs` 来查看。一般是一个到具体 SDK 目录的软连接。
 
-And architecture option can be found in `Configurations/15-ios.conf` (here we use `ios64-cross`).
+具体的平台选项（这里我们用了 `ios64-cross`）可以查看源码目录下的 `Configurations/15-ios.conf`。
 
-In order to distinguish them from the later MacOS libraries, the compiled static library files are renamed here with `-iOS` suffix:
+为了与后面 MacOS 的库进行区分，这里把编译出来的静态库改名为：
 
 - `libssl-iOS.a`
 - `libcrypto-iOS.a`
 
+
+
 ### iOS Simulator
 
-We need to compile simulator's library separately.
+模拟器跟真机的库是有区别的，需要单独编译。
 
 ```bash
 cd ~/workspace/openssl-3.0.12
@@ -61,33 +63,35 @@ make install
 make clean
 ```
 
-In order to distinguish them from the later MacOS libraries, the compiled static library files are renamed here with `-iossimulator` suffix:
+为了与后面 MacOS 的库进行区分，这里把编译出来的静态库改名为：
 
 - `libssl-iossimulator.a`
 - `libcrypto-iossimulator.a`
 
+
+
 ### MacOS
 
-OpenSSL compile manual for MacOS: https://wiki.openssl.org/index.php/Compilation_and_Installation#OS_X
+OpenSSL MacOS 编译指南：https://wiki.openssl.org/index.php/Compilation_and_Installation#OS_X
 
 ```bash
 cd ~/workspace/openssl-3.0.12
 
-# x86_64
+# 编译 x86_64 版本
 ./Configure darwin64-x86_64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64" no-asm
 
 make
 make install
 make clean
 
-# arm64
+# 编译 arm64 版本
 ./Configure darwin64-arm64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64" no-asm
 
 make
 make install
 make clean
 
-# merge
+# 合并静态库
 mkdir -p /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/
 
 lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/libssl.a /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64/lib/libssl.a -output /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/libssl.a
@@ -95,21 +99,23 @@ lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/li
 lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/libcrypto.a /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64/lib/libcrypto.a -output /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/libcrypto.a
 ```
 
-For specific platform options, see `Configurations/10-main.conf` in the source directory.
+具体的平台选项可以查看源码目录下的 `Configurations/10-main.conf`。
 
-The header files in the `include` directory are exactly the same, and only one copy is required.
+其生成的 `include` 目录下的头文件完全一致，只需要拷贝一份即可。
 
-## Demo for MacOS
 
-Here we create a C++ project to verify the signed file.
 
-In XCode, create a Command Line Tool project, choose C++ for Language:
+## 构建 Mac 测试项目
+
+这里我们用一个测试的 C++ 项目来同样验证前面 OpenSSL 签名的文件（见 [构建密钥、证书及测试签名](#构建密钥、证书及测试签名) ）。
+
+在 XCode 里创建一个命令行项目，代码类型选择 C++：
 
 ![截屏2023-11-27 16.14.26.png](../images/截屏2023-11-27 16.14.26.png)
 
 ![截屏2023-11-27 16.15.58.png](../images/截屏2023-11-27 16.15.58.png)
 
-Add a new C++ file `Verifier.cpp`, and Xcode can help to create a header file `Verifier.hpp`.
+使用 Xcode 在项目里加入一个新的 C++ 文件 `Verifier.cpp`，Xcode 会贴心的创建对应的 `Verifier.hpp` 头文件。
 
 `Verifier.hpp`：
 
@@ -188,12 +194,12 @@ bool Verifier::verifyFile()
 
 string Verifier::getKeyStrFromPublickKey(EVP_PKEY *publicKey)
 {
-    // Create a BIO to output public key to string
+    // 创建一个BIO以将公钥内容输出到字符串
     string publicKeyStr;
     BIO *publicKeyBio = BIO_new(BIO_s_mem());
     if (PEM_write_bio_PUBKEY(publicKeyBio, publicKey) == 1)
     {
-        // Read data in BIO to string variable
+        // 将BIO中的数据读取到字符串变量中
         char *buffer;
         long publicKeySize = BIO_get_mem_data(publicKeyBio, &buffer);
         if (publicKeySize > 0)
@@ -212,51 +218,51 @@ bool Verifier::verifySignature(const string &data, const string &publicKeyStr, c
     ERR_load_crypto_strings();
     OpenSSL_add_all_algorithms();
 
-    // Read public key string to BIO
+    // 读取公钥字符串到 BIO
     BIO *publicKeyBIO = BIO_new_mem_buf(publicKeyStr.c_str(), -1);
     RSA *rsa = nullptr;
 
-    // Read PEM public key from BIO
+    // 从 BIO 中解析 PEM 格式的公钥
     rsa = PEM_read_bio_RSA_PUBKEY(publicKeyBIO, &rsa, nullptr, nullptr);
 
-    // Create EVP_MD_CTX object for verification
+    // 创建 EVP_MD_CTX 对象用于验证
     EVP_MD_CTX *md_ctx = EVP_MD_CTX_new();
     EVP_MD_CTX_init(md_ctx);
 
-    // Set the hash algorithm to verify (SHA256 in this case)
+    // 设置要验证的哈希算法 (SHA256 in this case)
     const EVP_MD *md = EVP_sha256();
 
-    // Set public key in EVP_MD_CTX object
+    // 在 EVP_MD_CTX 对象中设置公钥
     EVP_PKEY *pkey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pkey, rsa);
     EVP_MD_CTX_set_pkey_ctx(md_ctx, EVP_PKEY_CTX_new(pkey, nullptr));
 
-    // Initializes the context of the signature algorithm with the public key
+    // 更新签名算法的上下文，使用要验证的数据（例如文件内容）
     EVP_DigestVerifyInit(md_ctx, nullptr, md, nullptr, pkey);
 
-    // Update the context of the signature algorithm to use the data to be verified (e.g. file contents)
+    // 更新签名算法的上下文，使用要验证的数据（例如文件内容）
     EVP_DigestUpdate(md_ctx, data.c_str(), data.size());
 
-    // Verify the signature
+    // 验证签名
     int result = EVP_DigestVerifyFinal(md_ctx, reinterpret_cast<const unsigned char *>(signatureStr.c_str()), signatureStr.size());
 
-    // Release resources
+    // 释放资源
     EVP_MD_CTX_free(md_ctx);
     EVP_cleanup();
     CRYPTO_cleanup_all_ex_data();
     ERR_free_strings();
 
-    // Output verification result based on the verification result
+    // 根据验证结果输出校验结果
     if (result == 1)
     {
-        std::cout << "File verified successfully" << std::endl;
+        std::cout << "文件验证成功" << std::endl;
     }
     else
     {
-        std::cout << "File verify failed" << std::endl;
+        std::cout << "文件验证失败" << std::endl;
     }
 
-    // Return verification result
+    // 返回验证结果
     return (result == 1);
 }
 
@@ -299,17 +305,21 @@ string Verifier::readFromFile(const string &filename)
 }
 ```
 
-Because we have not import OpenSSL library, there should be error report in the source code, just ignore them for nwo.
+代码里会报错，因为我们还没有把前面的 OpenSSL 库引入。
 
-Create a folder `openssl` under the directory of `main.cpp` ， and copy our compiled  `libcrypto-iOS.a` , `libssl-iOS.a`, `libcrypto-iossimulator.a` , `libssl-iossimulator.a` and  `~/workspace/openssl-3.0.12/openssl-darwin/libcrypto.a` , `~/workspace/openssl-3.0.12/openssl-darwin/libssl.a` to this `openssl` folder.
 
-Copy the whole `~/workspace/openssl-3.0.12/openssl-darwin-arm64/include` to our new created `openssl` folder.
 
-Right-click on our Xcode project and choose "Add Files to...." and add our `openssl` to our project.
+在当前 `main.cpp` 所在目录下创建一个 `openssl` 目录，将前面编译的 `libcrypto-iOS.a` 、`libssl-iOS.a`、`libcrypto-iossimulator.a` 、`libssl-iossimulator.a` 以及 `~/workspace/openssl-3.0.12/openssl-darwin/libcrypto.a` 和 `~/workspace/openssl-3.0.12/openssl-darwin/libssl.a` 拷贝到 `openssl` 目录，然后把前面 `~/workspace/openssl-3.0.12/openssl-darwin-arm64/include` 整个目录也拷贝到 `openssl` 目录。
+
+
+
+在 Xcode 的项目上用鼠标右键弹出菜单，选择 "Add Files to...." ，把刚才的 `openssl` 目录加入到项目里。
 
 ![be9cb4aeb5164883668d0486ca1e2251.png](../images/be9cb4aeb5164883668d0486ca1e2251.png)
 
-And add the static library files to Framework and Libraries of our project:
+
+
+再把静态库加入到项目的 Framework and Libraries 里：
 
 ![6256150eeca38ab1c92b4f062252c3c7.png](../images/6256150eeca38ab1c92b4f062252c3c7.png)
 
@@ -317,21 +327,29 @@ And add the static library files to Framework and Libraries of our project:
 
 ![4a2580c1665dfbd12aefb70a09bf436b.png](../images/4a2580c1665dfbd12aefb70a09bf436b.png)
 
-Add Header Search Paths: `${SRCROOT}/<ProjectName>/openssl/include` :
+
+
+把头文件搜索路径添加到 Header Search Paths 里（值为 `${SRCROOT}/<项目名>/openssl/include` ）：
 
 ![3f64c07bd65663bcec4f7342a8d7c70f.png](../images/3f64c07bd65663bcec4f7342a8d7c70f.png)
 
 ![540cf7f3d1b022667f71b1a8cf93ede4.png](../images/540cf7f3d1b022667f71b1a8cf93ede4.png)
 
-Edit Schema and set Working Directory to `${SRCROOT}/TestOpenssl`:
+
+
+修改项目的 Schema，让项目工作路径为当前源码目录 `${SRCROOT}/TestOpenssl`
 
 ![1e2cf21b5fa4213b9868f117bcd205c5.png](../images/1e2cf21b5fa4213b9868f117bcd205c5.png)
 ![701365ce8da5766dc23be2822f9aa5b7.png](../images/701365ce8da5766dc23be2822f9aa5b7.png)
 
-Put our `certificate.crt`, `signature.bin` and `MyFile.txt` into the project:
+
+
+把前面 OpenSSL 命令行生成的证书、签名和测试文件也放置到代码相同的目录下：
 ![eec39cc3346b93ba575ccc9225931ede.png](../images/eec39cc3346b93ba575ccc9225931ede.png)
 
-Modify `main.cpp`:
+
+
+修改 `main.cpp`：
 
 ```cpp
 #include "Verifier.hpp"
@@ -343,24 +361,30 @@ int main(int argc, const char * argv[]) {
 }
 ```
 
-Compile with command line:
+
+
+命令行编译：
 
 ```bash
 clang++ -g Verifier.cpp main.cpp -o main -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11
 ```
 
-Rut test:
+
+
+运行测试：
 
 ```bash
 ./main
-File verified successfully
+文件验证成功
 
-# Edit MyFile.txt content and run again
+# 修改 MyFile.txt 内容后再运行
 ./main
-File verify failed
+文件验证失败
 ```
 
-### Compile Static Library
+
+
+### 编译静态库
 
 ```bash
 clang++ -g -c Verifier.cpp -o verifier.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation
@@ -368,11 +392,11 @@ clang++ -g -c Verifier.cpp -o verifier.o -I /Users/tattoo/workspace/TestOpenssl/
 libtool -static -o libverifier.a *.o openssl/libssl.a openssl/libcrypto.a
 ```
 
-Here we generate static libraries for iOS and iOS simulator for `Verifier.cpp`, then we can use them in other projects without copy source code:
+在这个项目里，我们想把 `Verifier.cpp` 直接编译成支持 iOS 真机 和 iOS 模拟器 的静态库，这样就不用把源代码到处拷贝了：
 
 ```bash
-# iOS
-# Check SDK path
+# iOS 真机
+# 查看 SDK 路径
 xcrun -sdk iphoneos --show-sdk-path
 
 clang++ -g -c Verifier.cpp -o verifier-iOS.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.0.sdk
@@ -380,8 +404,8 @@ clang++ -g -c Verifier.cpp -o verifier-iOS.o -I /Users/tattoo/workspace/TestOpen
 libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 
 
-# iOS Simulator
-# Check SDK path
+# iOS 模拟器
+# 查看 SDK 路径
 xcrun -sdk iphonesimulator --show-sdk-path
 
 clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -DIOS_PLATFORM=SIMULATOR64 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator17.0.sdk
@@ -389,4 +413,16 @@ clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I /Users/tattoo/workspace
 libtool -static -o libverifier-iossimulator.a *-iossimulator.o openssl/*-iossimulator.a
 ```
 
-## 
+ 
+
+## 以下作废，并不好用……
+
+--------------
+
+不使用此方法的原因是虽然编译出来了静态库，但因为此项目脚本魔改了头文件，而修改后头文件的宏在 Xcode 中可能会有无法预知的问题，比如我就遇到了 `openssl/bn.h:186:39 Unknown type name 'BN_ULONG'` 的报错……
+
+克隆 https://github.com/x2on/OpenSSL-for-iPhone 到本地
+
+然后进入 OpenSSL-for-iPhone 目录，运行 `./build-libssl.sh` 脚本即可编译。目前缺省版本为 **openssl-1.1.1w** 。
+
+编译完成后的静态库放置在当前目录的 **lib** 子目录，头文件在 **include** 子目录。

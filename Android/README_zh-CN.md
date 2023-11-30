@@ -1,17 +1,15 @@
-### **[中文](./README_zh-CN.md)**
+# 安卓
 
-# Android
+- Android Studio：https://developer.android.google.cn/studio?hl=zh-cn
+- NDK：https://github.com/android/ndk/wiki/Unsupported-Downloads ，这里使用 21e
+- OpenSSL 安卓编译指南：https://wiki.openssl.org/index.php/Android
+- OpenSSL 安卓编译脚本：https://github.com/217heidai/openssl_for_android
 
-- Android Studio: https://developer.android.com/studio
-- NDK: https://github.com/android/ndk/wiki/Unsupported-Downloads ，Here we use `21e`
-- OpenSSL compilation manual for Android: https://wiki.openssl.org/index.php/Android
-- OpenSSL compilation script for Android: https://github.com/217heidai/openssl_for_android
+## 编译 OpenSSL 静态库
 
-## Compile OpenSSL static library
+以下操作我是在 Windows 10 下 WSL2 的 Ubuntu 环境里完成的。
 
-I did the following in an Ubuntu in WSL2 environment under Windows 10.
-
-`build.sh` script：
+`build.sh` 脚本：
 
 ```bash
 #!/bin/bash -e
@@ -79,7 +77,7 @@ else
 fi
 ```
 
-Put the script above to the source code folder of OpenSSL and modify the path variables (`WORK_PATH` is the path of source code，`ANDROID_NDK_PATH` is the NDK installation path),  then execute following commands to compile static libraries for 4 different architectures.
+将上面的脚本放置到 OpenSSL 源码目录，修改目录路径（`WORK_PATH` 为源码路径，`ANDROID_NDK_PATH` 为 NDK 安装路径）后，执行下面的语句来编译出 4 个架构的静态库：
 
 ```bash
 ./build.sh armeabi-v7a
@@ -88,11 +86,11 @@ Put the script above to the source code folder of OpenSSL and modify the path va
 ./build.sh x86_64
 ```
 
-The generated libraries and headers are located under `openssl_3.0.12_arm64-v8a`、`openssl_3.0.12_armeabi-v7a`、`openssl_3.0.12_x86`、`openssl_3.0.12_x86_64` in OpenSSL source code folder. Header files in `include` folders are same so we just need only one copy.
+输出的库文件、头文件目录在源码目录下的 `openssl_3.0.12_arm64-v8a`、`openssl_3.0.12_armeabi-v7a`、`openssl_3.0.12_x86`、`openssl_3.0.12_x86_64`，其中 `include` 目录下的头文件完全一致，只需要拷贝一份即可。
 
-### Compile error fix
+### 错误修复
 
-There may be following error occurs when use our compiled static libraries under  Android Studio:
+使用官包在 Android Studio 里编译时可能出现如下错误：
 
 ```
 cmd.exe /C "cd . && C:\Users\tattoo\AppData\Local\Android\Sdk\ndk\25.1.8937393\toolchains\llvm\prebuilt\windows-x86_64\bin\clang++.exe --target=x86_64-none-linux-android24 --sysroot=C:/Users/tattoo/AppData/Local/Android/Sdk/ndk/25.1.8937393/toolchains/llvm/prebuilt/windows-x86_64/sysroot -fPIC -g -DANDROID -fdata-sections -ffunction-sections -funwind-tables -fstack-protector-strong -no-canonical-prefixes -D_FORTIFY_SOURCE=2 -Wformat -Werror=format-security   -fno-limit-debug-info  -static-libstdc++ -Wl,--build-id=sha1 -Wl,--no-rosegment -Wl,--fatal-warnings -Wl,--gc-sections -Wl,--no-undefined -Qunused-arguments -shared -Wl,-soname,libsignverify.so -o D:\workspace\signverify\app\build\intermediates\cxx\Debug\n6l545p2\obj\x86_64\libsignverify.so CMakeFiles/signverify.dir/signverify/Verifier.cpp.o CMakeFiles/signverify.dir/native-lib.cpp.o  D:/workspace/signverify/app/src/main/cpp/signverify/lib/x86_64/libssl.a  D:/workspace/signverify/app/src/main/cpp/signverify/lib/x86_64/libcrypto.a  -landroid  -llog  -latomic -lm && cd ."
@@ -105,7 +103,7 @@ ld: error: relocation R_X86_64_PC32 cannot be used against symbol 'bio_type_lock
 
 ![920d4159a45b8f0fdeeefbb7494bf362.png](../images/920d4159a45b8f0fdeeefbb7494bf362.png)
 
-This is because when compile OpenSSL, it needs each .o file to be compiled with `-fPIC` option. Here I modified `Configurations\00-base-templates.conf` to add `-fPIC` :
+这是因为在前面编译 OpenSSL 库时，需要每一个 .o 文件都使用 `-fPIC` 选项。这里修改了 OpenSSL 源码目录下 `Configurations\00-base-templates.conf` 的内容，加上了 `-fPIC` ：
 
 ```perl
 # -*- Mode: perl -*-
@@ -132,32 +130,32 @@ my %targets=(
     shared_rcflag    => "",
 ```
 
-## Use OpenSSL Library in Android Studio
+## 将 OpenSSL 库引入 Android Studio
 
-### Create a NDK project
+### 创建 NDK 项目
 
-Opne Android Studio and create a new Native C++ project:
+打开 Android Studio，创建一个新的 Native C++ 项目：
 
 ![4a85b36d0caf8267ad67fdc99f809ada.png](../images/4a85b36d0caf8267ad67fdc99f809ada.png)
 
-Language choose `Java` and Build configuration language choose `Groovy DSL`:
+语言选择 `Java`，Build configuration language 选择 `Groovy DSL`：
 ![5ecb6c1e8e62ceae24b588f39acb7351.png](../images/5ecb6c1e8e62ceae24b588f39acb7351.png)
 
-Other options we left using default value. And now we have a new NDK project.
+其它选择缺省值，这样一个新的项目就创建成功了。
 
-Switch to **Project** view and right-click on **app -> src -> main**, create a new directory named `assets`:
+切换到 **Project** 视图，在 **app -> src -> main** 上单击鼠标右键，创建一个新目录 `assets`：
 ![6edecf49a618636f98fc8d530b165951.png](../images/6edecf49a618636f98fc8d530b165951.png)
 
 ![48793cd4c19162acc4d8eae877413e8d.png](../images/48793cd4c19162acc4d8eae877413e8d.png)
 
-Copy our `certificate.crt`, `signature.bin` and `MyFile.txt` to `assets`:
+然后把前面我们生成的证书、签名和测试文件都拷贝到 `assets` 目录下：
 ![e02939ebc8329105bf12ab0234d15dc2.png](../images/e02939ebc8329105bf12ab0234d15dc2.png)
 
-Right-click on **app -> src -> main -> cpp** and create a new directory `openssl`, then copy the OpenSSL static libriaries and include folder to it:
+在 **app -> src -> main -> cpp** 上单击鼠标右键，创建一个新目录 `openssl`，然后把前面编译的 OpenSSL 静态库和头文件目录都拷贝到里面：
 
 ![f434ad8f25b227a1a5f7504a19f0d310.png](../images/f434ad8f25b227a1a5f7504a19f0d310.png)
 
-Create 2 files `Verifier.cpp` and `Verifier.h` under `openssl`:
+在 `openssl` 目录下创建两个文件 `Verifier.cpp` 和 `Verifier.h`。
 
 ![4ba7323b431ae2af2b5e9e564b0c6c7c.png](../images/4ba7323b431ae2af2b5e9e564b0c6c7c.png)
 
@@ -212,7 +210,7 @@ bool verifyFile(AAssetManager *pAsm)
         return false;
     }
 
-    // Get file content
+    // 获取文件内容
     off_t bufferSignSize = AAsset_getLength(assetSign);
     char *bufferSign = (char *) malloc(bufferSignSize + 1);
     bufferSign[bufferSignSize] = 0;
@@ -254,12 +252,12 @@ bool verifyFile(AAssetManager *pAsm)
 
 string getKeyStrFromPublickKey(EVP_PKEY *publicKey)
 {
-    // Create a BIO to output public key to string
+    // 创建一个BIO以将公钥内容输出到字符串
     string publicKeyStr;
     BIO *publicKeyBio = BIO_new(BIO_s_mem());
     if (PEM_write_bio_PUBKEY(publicKeyBio, publicKey) == 1)
     {
-        // Read data in BIO to string variable
+        // 将BIO中的数据读取到字符串变量中
         char *buffer;
         long publicKeySize = BIO_get_mem_data(publicKeyBio, &buffer);
         if (publicKeySize > 0)
@@ -278,51 +276,51 @@ bool verifySignature(const string &data, const string &publicKeyStr, const strin
     ERR_load_crypto_strings();
     OpenSSL_add_all_algorithms();
 
-    // Read public key string to BIO
+    // 读取公钥字符串到 BIO
     BIO *publicKeyBIO = BIO_new_mem_buf(publicKeyStr.c_str(), -1);
     RSA *rsa = nullptr;
 
-    // Read PEM public key from BIO
+    // 从 BIO 中解析 PEM 格式的公钥
     rsa = PEM_read_bio_RSA_PUBKEY(publicKeyBIO, &rsa, nullptr, nullptr);
 
-    // Create EVP_MD_CTX object for verification
+    // 创建 EVP_MD_CTX 对象用于验证
     EVP_MD_CTX *md_ctx = EVP_MD_CTX_new();
     EVP_MD_CTX_init(md_ctx);
 
-    // Set the hash algorithm to verify (SHA256 in this case)
+    // 设置要验证的哈希算法 (SHA256 in this case)
     const EVP_MD *md = EVP_sha256();
 
-    // Set public key in EVP_MD_CTX object
+    // 在 EVP_MD_CTX 对象中设置公钥
     EVP_PKEY *pkey = EVP_PKEY_new();
     EVP_PKEY_assign_RSA(pkey, rsa);
     EVP_MD_CTX_set_pkey_ctx(md_ctx, EVP_PKEY_CTX_new(pkey, nullptr));
 
-    // Initializes the context of the signature algorithm with the public key
+    // 更新签名算法的上下文，使用要验证的数据（例如文件内容）
     EVP_DigestVerifyInit(md_ctx, nullptr, md, nullptr, pkey);
 
-    // Update the context of the signature algorithm to use the data to be verified (e.g. file contents)
+    // 更新签名算法的上下文，使用要验证的数据（例如文件内容）
     EVP_DigestUpdate(md_ctx, data.c_str(), data.size());
 
-    // Verify the signature
+    // 验证签名
     int result = EVP_DigestVerifyFinal(md_ctx, reinterpret_cast<const unsigned char *>(signatureStr.c_str()), signatureStr.size());
 
-    // Release resources
+    // 释放资源
     EVP_MD_CTX_free(md_ctx);
     EVP_cleanup();
     CRYPTO_cleanup_all_ex_data();
     ERR_free_strings();
 
-    // Output verification result based on the verification result
+    // 根据验证结果输出校验结果
     if (result == 1)
     {
-        std::cout << "File verified successfully" << std::endl;
+        std::cout << "文件验证成功" << std::endl;
     }
     else
     {
-        std::cout << "File verify failed" << std::endl;
+        std::cout << "文件验证失败" << std::endl;
     }
 
-    // Return verification result
+    // 返回验证结果
     return (result == 1);
 }
 
@@ -346,7 +344,7 @@ X509 *loadCertificate(const string &certEntityString)
 }
 ```
 
-Modify `native-lib.cpp` under **cpp** directory:
+修改 **cpp** 项目目录下的 `native-lib.cpp`：
 
 ```cpp
 #include <jni.h>
@@ -364,22 +362,22 @@ Java_com_openssltest_sdk_testopenssl_MainActivity_stringFromJNI(
 }
 ```
 
-Modify`MainActivity.java` under **java** directory:
+修改 **java** 项目目录下的 `MainActivity.java`：
 
-- Add `import android.content.res.AssetManager;`
-- Change `tv.setText(stringFromJNI());` to `tv.setText(stringFromJNI(this.getAssets()));`
+- 在 import 部分增加 `import android.content.res.AssetManager;`
+- 把 `tv.setText(stringFromJNI());` 改为 `tv.setText(stringFromJNI(this.getAssets()));`
 
-Modify `CMakeLists.txt` under **cpp** directory, add openssl headers and static libraries, and our new source code we just added:
+修改 **cpp** 项目目录下的 `CMakeLists.txt` （添加了 openssl 的头文件和静态库，以及我们新加的源代码）：
 
 ```CMake
 cmake_minimum_required(VERSION 3.22.1)
 
 project("testopenssl")
 
-# OpenSSL headers
+# OpenSSL 头文件
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/openssl/include)
 
-# OpenSSL static libraries
+# OpenSSL 静态库
 add_library(local_crypto STATIC IMPORTED)
 add_library(local_openssl STATIC IMPORTED)
 
@@ -388,20 +386,20 @@ set_target_properties(local_openssl PROPERTIES IMPORTED_LOCATION ${CMAKE_CURRENT
 
 add_library(${CMAKE_PROJECT_NAME} SHARED
         # List C/C++ source files with relative paths to this CMakeLists.txt.
-        # Our source code
+        # 新加的源码文件
         openssl/Verifier.cpp
         native-lib.cpp)
 
 target_link_libraries(${CMAKE_PROJECT_NAME}
         # List libraries link to the target library
-        # Link OpenSSL static libraries
+        # 链接 OpenSSL 静态库
         local_openssl
         local_crypto
         android
         log)
 ```
 
-Modify `build.gradle` under **app** directory. Here we need change `compileSdk` to **34** because of our Android Studio edition:
+修改 **app** 目录下的 `build.gradle` 文件，因为当前 Android Studio 版本的原因，需要调整 `compileSdk` 到 **34**：
 
 ```gradle
 plugins {
@@ -457,13 +455,13 @@ dependencies {
 }
 ```
 
-Build and execute. It should output result like following:
+编译运行，如果没有问题，应该在模拟器里显示如下结果：
 ![13297258ab0c417b65821a542148568e.png](../images/13297258ab0c417b65821a542148568e.png)
 
-Modify the content of `MyFile.txt`, build and execute again, it should output `File Verify failed`.
+尝试修改一下 `MyFile.txt` 文件内容，再编译运行，应该输出 `File Verify failed`。
 
-### Generate library file
+### 生成库文件
 
-We can run `build` or `buildNeeded` task of **Gradle** and Android Studio will generate `libtestopenssl.so` library files for different architecture ( files are under `app/build/intermediates/stripped_native_libs/<release or debug>/out/lib/` directory), and we can use them in other Android projects.
+我们可以运行一遍 **Gradle** 的构建任务 `build` 或 `buildNeeded`，Android Studio 会帮我们生成不同平台下可用的 `libtestopenssl.so` 库文件 (在`app/build/intermediates/stripped_native_libs/<release or debug>/out/lib/` 目录下)，我们可以在其它 Android 应用里使用它们了：
 
 ![41c99ba01b4067fd778a0beb30fddf48.png](../images/41c99ba01b4067fd778a0beb30fddf48.png)

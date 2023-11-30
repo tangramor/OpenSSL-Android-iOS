@@ -1,41 +1,35 @@
+### [中文](./README_zh-CN.md)
+
 # iOS
 
-需要先完成 [MacOS OpenSSL 构建](../MacOS/README.md)。
+Here we need to complete works in [OpenSSL for MacOS](../MacOS/README.md)。
 
+## Demo for iOS
 
-
-## 构建 iOS 测试项目
-
-Xcode 里新建一个项目，选择 iOS App：
+Create a new project in Xcode and choose iOS App：
 
 ![企业微信20231128-165928@2x.png](../images/企业微信20231128-165928@2x.png)
 
-Interface 选择 `Storyboard`，Language 选择 `Objective-C`：
+Interface choose `Storyboard`, and Language choose `Objective-C`:
 
 ![企业微信20231128-170052@2x.png](../images/企业微信20231128-170052@2x.png)
 
-选中左侧 `Main.Storyboard`，给 View 里添加一个 Text View，调整一下大小、字体啥的。
+Select `Main.Storyboard` in the left panel and add a Text View in the View:
 
 ![企业微信20231128-170631@2x.png](../images/企业微信20231128-170631@2x.png)
 
-把前面项目里用到和生成的文件加入到这个新项目：
+Just like what we do in MacOS demo, add the files and library we created in MacOS demo to this project:
 
 ![b9473289107101cae9ac065d3eed7b6d.png](../images/b9473289107101cae9ac065d3eed7b6d.png)
-⚠️ 截图里的 `Verifier.cpp` 文件并不需要……`openssl` 目录下的静态库也都删掉只保留 `include` 目录内容。
+⚠️ The `Verifier.cpp` in the snapshot is not needed. And also remove .a files in `openssl` directory, only left `include` headers.
 
+Rename `ViewController.m` to `ViewController.mm` for we are using C++ header.
 
-
-因为我们的库是 C++ 的，所以把引用头文件的 `ViewController.m` 文件名称改为 `ViewController.mm`。
-
-
-
-选中左侧 `Main.Storyboard`，点击右上角的添加编辑器图标，这样 Xcode 就分屏成左右两边了。左边选择 `ViewController.mm`，右边还是 `Main.Storyboard`，然后点击前面创建的 Text View，按住 **Ctrl** 键，拖动鼠标到左侧编辑器合适位置，这样一个 Property IBOutlet 就自动创建了，命名为 `Text`：
+Select `Main.Storyboard` and click icon "Add Editor on Right" to split the editor screen. Select `ViewController.mm` in the left screen and `Main.Storyboard` in right screen, then click the Text View we added and hold down the Ctrl key and drag the mouse to the appropriate location in the editor on the left, and the Property IBOutlet will be automatically created, named it `Text`:
 
 ![企业微信20231129-111427@2x.png](../images/企业微信20231129-111427@2x.png)
 
-
-
-修改 `ViewController.mm` 代码如下：
+Edite `ViewController.mm`:
 
 ```objectivec
 #import "ViewController.h"
@@ -59,8 +53,6 @@ Interface 选择 `Storyboard`，Language 选择 `Objective-C`：
 @end
 ```
 
-编译项目。注意如果是使用**模拟器**，那么静态库需要使用前面构建的 `libverifier-iossimulator.a`，**真机**则需要改为 `libverifier-iOS.a`。
+Compile and run the project.
 
-
-
-
+**Note**: If you are using simulator, the static library should use `libverifier-iossimulator.a`. And for real iPhone, use `libverifier-iOS.a`.
