@@ -105,9 +105,9 @@ Here we create a C++ project to verify the signed file.
 
 In XCode, create a Command Line Tool project, choose C++ for Language:
 
-![截屏2023-11-27 16.14.26.png](../images/截屏2023-11-27 16.14.26.png)
+![2023-11-27-16.14.26.png](../images/2023-11-27-16.14.26.png)
 
-![截屏2023-11-27 16.15.58.png](../images/截屏2023-11-27 16.15.58.png)
+![2023-11-27-16.15.58.png](../images/2023-11-27-16.15.58.png)
 
 Add a new C++ file `Verifier.cpp`, and Xcode can help to create a header file `Verifier.hpp`.
 

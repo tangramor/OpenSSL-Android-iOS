@@ -111,9 +111,9 @@ lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/li
 
 在 XCode 里创建一个命令行项目，代码类型选择 C++：
 
-![截屏2023-11-27 16.14.26.png](../images/截屏2023-11-27 16.14.26.png)
+![2023-11-27-16.14.26.png](../images/2023-11-27-16.14.26.png)
 
-![截屏2023-11-27 16.15.58.png](../images/截屏2023-11-27 16.15.58.png)
+![2023-11-27-16.15.58.png](../images/2023-11-27-16.15.58.png)
 
 使用 Xcode 在项目里加入一个新的 C++ 文件 `Verifier.cpp`，Xcode 会贴心的创建对应的 `Verifier.hpp` 头文件。
 
