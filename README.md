@@ -2,7 +2,7 @@
 
 # OpenSSL Android/iOS Compilation Process and Development Demos
 
-OpenSSL source code: https://www.openssl.org/source/ . Here, we will use version `3.0.12` LTS (`1.1.1` and lower versions' support have been discontinued and are strongly recommended to stop using).
+OpenSSL source code: https://www.openssl.org/source/ . Here we will use version `3.0.12` LTS (`1.1.1` and lower versions' support have been discontinued and are strongly recommended to stop using).
 
 ## Building Keys, Certificate, and Signature
 
@@ -28,7 +28,7 @@ openssl dgst -sha256 -sign private_key.pem -out signature.bin <file to sign>
 openssl dgst -sha256 -verify public_key.pem -signature signature.bin <file to verify the signature of>
 ```
 
-Here, we assume that we have signed the `MyFile.txt` file and generated the `signature.bin` signature file.
+Here we assume that we have signed the `MyFile.txt` file and generated the `signature.bin` signature file.
 
 The following Android and iOS/Mac verification projects will use:
 
