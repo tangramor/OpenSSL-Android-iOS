@@ -398,7 +398,7 @@ export SDK_PATH=$(xcrun -sdk iphoneos --show-sdk-path)
 export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer
 export CROSS_SDK=iPhoneOS.sdk
 
-clang++ -g -c Verifier.cpp -o verifier-iOS.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot $SDK_PATH
+clang++ -g -c Verifier.cpp -o verifier-iOS.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl/*-iOS.a -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 
@@ -411,7 +411,7 @@ export SDK_PATH=$(xcrun -sdk iphonesimulator --show-sdk-path)
 export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer
 export CROSS_SDK=iPhoneSimulator.sdk
 
-clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation  -mios-simulator-version-min=12.0 -fno-common -DIOS_PLATFORM=SIMULATOR64 -isysroot $SDK_PATH
+clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl/*-iossimulator.a -std=c++11 -lobjc -framework CoreFoundation  -mios-simulator-version-min=12.0 -fno-common -DIOS_PLATFORM=SIMULATOR64 -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iossimulator.a *-iossimulator.o openssl/*-iossimulator.a
 ```
