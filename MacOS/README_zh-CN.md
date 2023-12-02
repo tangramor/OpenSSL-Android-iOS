@@ -2,8 +2,6 @@
 
 以下操作在 Macbook Pro（M1芯片，MacOS Sonoma 14.0）上完成。
 
-
-
 ## 编译 OpenSSL
 
 需要确认一下本地开发环境，比如执行 `xcode-select -print-path` ，看看路径是否正确。我这里需要运行 `sudo xcode-select -switch /Applications/Xcode.app/Contents/Developer` 来设定正确的开发环境变量。
@@ -12,11 +10,9 @@
 
 在编译的时候我碰到了一些编译问题，例如 `.../clang/15.0.0/include/inttypes.h:21:15: fatal error: 'inttypes.h' file not found` 这种离奇的报错。这时候不要慌，**重启**一下系统或许就解决了……
 
-
-
 ### iOS
 
-OpenSSL iOS 编译指南：https://wiki.openssl.org/index.php/Compilation_and_Installation#iOS
+OpenSSL iOS 编译指南： https://wiki.openssl.org/index.php/Compilation_and_Installation#iOS
 
 ```bash
 cd ~/workspace/openssl-3.0.12
@@ -26,11 +22,17 @@ export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.p
 export CROSS_SDK=iPhoneOS.sdk
 export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:$PATH
 
-./Configure ios64-cross no-shared no-dso no-hw no-engine --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-ios64"
+export WORK_PATH=$(pwd)
+
+./Configure ios64-cross no-shared no-dso no-engine --prefix=$WORK_PATH"/openssl-ios64"
 
 make
 make install
 make clean
+
+cd openssl-ios64/lib
+mv libcrypto.a libcrypto-iOS.a
+mv libssl.a libssl-iOS.a
 ```
 
 这里 `CROSS_SDK` 的值可以 `ls /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs` 来查看。一般是一个到具体 SDK 目录的软连接。
@@ -41,8 +43,6 @@ make clean
 
 - `libssl-iOS.a`
 - `libcrypto-iOS.a`
-
-
 
 ### iOS Simulator
 
@@ -56,11 +56,17 @@ export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimu
 export CROSS_SDK=iPhoneSimulator.sdk
 export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:$PATH
 
-./Configure iossimulator-xcrun no-shared no-dso no-hw no-engine --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-iossimulator"
+export WORK_PATH=$(pwd)
+
+./Configure iossimulator-xcrun no-shared no-dso no-engine --prefix=$WORK_PATH"/openssl-iossimulator"
 
 make
 make install
 make clean
+
+cd openssl-iossimulator/lib
+mv libcrypto.a libcrypto-iossimulator.a
+mv libssl.a libssl-iossimulator.a
 ```
 
 为了与后面 MacOS 的库进行区分，这里把编译出来的静态库改名为：
@@ -68,42 +74,42 @@ make clean
 - `libssl-iossimulator.a`
 - `libcrypto-iossimulator.a`
 
-
-
 ### MacOS
 
-OpenSSL MacOS 编译指南：https://wiki.openssl.org/index.php/Compilation_and_Installation#OS_X
+OpenSSL MacOS 编译指南： https://wiki.openssl.org/index.php/Compilation_and_Installation#OS_X
 
 ```bash
 cd ~/workspace/openssl-3.0.12
 
+export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer
+export CROSS_SDK=MacOSX.sdk
+export WORK_PATH=$(pwd)
+
 # 编译 x86_64 版本
-./Configure darwin64-x86_64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64" no-asm
+./Configure darwin64-x86_64-cc --prefix=$WORK_PATH"/openssl-darwin-x86_64" no-asm
 
 make
 make install
 make clean
 
 # 编译 arm64 版本
-./Configure darwin64-arm64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64" no-asm
+./Configure darwin64-arm64-cc --prefix=$WORK_PATH"/openssl-darwin-arm64" no-asm
 
 make
 make install
 make clean
 
 # 合并静态库
-mkdir -p /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/
+mkdir -p $WORK_PATH"/openssl-darwin"
 
-lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/libssl.a /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64/lib/libssl.a -output /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/libssl.a
+lipo -create $WORK_PATH"/openssl-darwin-x86_64/lib/libssl.a" $WORK_PATH"/openssl-darwin-arm64/lib/libssl.a" -output $WORK_PATH"/openssl-darwin/libssl.a"
 
-lipo -create /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64/lib/libcrypto.a /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64/lib/libcrypto.a -output /Users/tattoo/workspace/openssl-3.0.12/openssl-darwin/libcrypto.a
+lipo -create $WORK_PATH"/openssl-darwin-x86_64/lib/libcrypto.a" $WORK_PATH"/openssl-darwin-arm64/lib/libcrypto.a" -output $WORK_PATH"/openssl-darwin/libcrypto.a"
 ```
 
 具体的平台选项可以查看源码目录下的 `Configurations/10-main.conf`。
 
 其生成的 `include` 目录下的头文件完全一致，只需要拷贝一份即可。
-
-
 
 ## 构建 Mac 测试项目
 
@@ -307,17 +313,11 @@ string Verifier::readFromFile(const string &filename)
 
 代码里会报错，因为我们还没有把前面的 OpenSSL 库引入。
 
-
-
 在当前 `main.cpp` 所在目录下创建一个 `openssl` 目录，将前面编译的 `libcrypto-iOS.a` 、`libssl-iOS.a`、`libcrypto-iossimulator.a` 、`libssl-iossimulator.a` 以及 `~/workspace/openssl-3.0.12/openssl-darwin/libcrypto.a` 和 `~/workspace/openssl-3.0.12/openssl-darwin/libssl.a` 拷贝到 `openssl` 目录，然后把前面 `~/workspace/openssl-3.0.12/openssl-darwin-arm64/include` 整个目录也拷贝到 `openssl` 目录。
-
-
 
 在 Xcode 的项目上用鼠标右键弹出菜单，选择 "Add Files to...." ，把刚才的 `openssl` 目录加入到项目里。
 
 ![be9cb4aeb5164883668d0486ca1e2251.png](../images/be9cb4aeb5164883668d0486ca1e2251.png)
-
-
 
 再把静态库加入到项目的 Framework and Libraries 里：
 
@@ -327,27 +327,19 @@ string Verifier::readFromFile(const string &filename)
 
 ![4a2580c1665dfbd12aefb70a09bf436b.png](../images/4a2580c1665dfbd12aefb70a09bf436b.png)
 
-
-
 把头文件搜索路径添加到 Header Search Paths 里（值为 `${SRCROOT}/<项目名>/openssl/include` ）：
 
 ![3f64c07bd65663bcec4f7342a8d7c70f.png](../images/3f64c07bd65663bcec4f7342a8d7c70f.png)
 
 ![540cf7f3d1b022667f71b1a8cf93ede4.png](../images/540cf7f3d1b022667f71b1a8cf93ede4.png)
 
-
-
 修改项目的 Schema，让项目工作路径为当前源码目录 `${SRCROOT}/TestOpenssl`
 
 ![1e2cf21b5fa4213b9868f117bcd205c5.png](../images/1e2cf21b5fa4213b9868f117bcd205c5.png)
 ![701365ce8da5766dc23be2822f9aa5b7.png](../images/701365ce8da5766dc23be2822f9aa5b7.png)
 
-
-
 把前面 OpenSSL 命令行生成的证书、签名和测试文件也放置到代码相同的目录下：
 ![eec39cc3346b93ba575ccc9225931ede.png](../images/eec39cc3346b93ba575ccc9225931ede.png)
-
-
 
 修改 `main.cpp`：
 
@@ -361,15 +353,14 @@ int main(int argc, const char * argv[]) {
 }
 ```
 
-
-
 命令行编译：
 
 ```bash
-clang++ -g Verifier.cpp main.cpp -o main -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
+clang++ -g Verifier.cpp main.cpp -o main -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11
 ```
-
-
 
 运行测试：
 
@@ -382,12 +373,13 @@ clang++ -g Verifier.cpp main.cpp -o main -I /Users/tattoo/workspace/TestOpenssl/
 文件验证失败
 ```
 
-
-
 ### 编译静态库
 
 ```bash
-clang++ -g -c Verifier.cpp -o verifier.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
+clang++ -g -c Verifier.cpp -o verifier.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation
 
 libtool -static -o libverifier.a *.o openssl/libssl.a openssl/libcrypto.a
 ```
@@ -395,11 +387,18 @@ libtool -static -o libverifier.a *.o openssl/libssl.a openssl/libcrypto.a
 在这个项目里，我们想把 `Verifier.cpp` 直接编译成支持 iOS 真机 和 iOS 模拟器 的静态库，这样就不用把源代码到处拷贝了：
 
 ```bash
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
 # iOS 真机
 # 查看 SDK 路径
 xcrun -sdk iphoneos --show-sdk-path
+export SDK_PATH=$(xcrun -sdk iphoneos --show-sdk-path)
 
-clang++ -g -c Verifier.cpp -o verifier-iOS.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.0.sdk
+export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer
+export CROSS_SDK=iPhoneOS.sdk
+
+clang++ -g -c Verifier.cpp -o verifier-iOS.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 
@@ -407,13 +406,15 @@ libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 # iOS 模拟器
 # 查看 SDK 路径
 xcrun -sdk iphonesimulator --show-sdk-path
+export SDK_PATH=$(xcrun -sdk iphonesimulator --show-sdk-path)
 
-clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -DIOS_PLATFORM=SIMULATOR64 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator17.0.sdk
+export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer
+export CROSS_SDK=iPhoneSimulator.sdk
+
+clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation  -mios-simulator-version-min=12.0 -fno-common -DIOS_PLATFORM=SIMULATOR64 -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iossimulator.a *-iossimulator.o openssl/*-iossimulator.a
 ```
-
- 
 
 ## 以下作废，并不好用……
 

@@ -73,12 +73,9 @@ fastlane/test_output
 .DS_Store
 
 signature
-ltgame.cfg
 
 *.o
 
 libverifier*.a
 main
 temp
-certificate.crt
-signature.bin

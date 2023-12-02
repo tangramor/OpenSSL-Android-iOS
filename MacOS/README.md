@@ -1,5 +1,3 @@
-# 
-
 ### [中文](./README_zh-CN.md)
 
 # iOS/MacOS
@@ -31,6 +29,10 @@ export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.x
 make
 make install
 make clean
+
+cd openssl-ios64/lib
+mv libcrypto.a libcrypto-iOS.a
+mv libssl.a libssl-iOS.a
 ```
 
 To get value of `CROSS_SDK`, you may `ls /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs`.
@@ -54,11 +56,17 @@ export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimu
 export CROSS_SDK=iPhoneSimulator.sdk
 export PATH=/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/bin:$PATH
 
-./Configure iossimulator-xcrun no-shared no-dso no-hw no-engine --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-iossimulator"
+export WORK_PATH=$(pwd)
+
+./Configure iossimulator-xcrun no-shared no-dso no-engine --prefix=$WORK_PATH"/openssl-iossimulator"
 
 make
 make install
 make clean
+
+cd openssl-iossimulator/lib
+mv libcrypto.a libcrypto-iossimulator.a
+mv libssl.a libssl-iossimulator.a
 ```
 
 In order to distinguish them from the later MacOS libraries, the compiled static library files are renamed here with `-iossimulator` suffix:
@@ -73,6 +81,10 @@ OpenSSL compile manual for MacOS: https://wiki.openssl.org/index.php/Compilation
 ```bash
 cd ~/workspace/openssl-3.0.12
 
+export CROSS_TOP=/Applications/Xcode.app/Contents/Developer/Platforms/MacOSX.platform/Developer
+export CROSS_SDK=MacOSX.sdk
+export WORK_PATH=$(pwd)
+
 # x86_64
 ./Configure darwin64-x86_64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-x86_64" no-asm
 
@@ -81,7 +93,7 @@ make install
 make clean
 
 # arm64
-./Configure darwin64-arm64-cc --prefix="/Users/tattoo/workspace/openssl-3.0.12/openssl-darwin-arm64" no-asm
+./Configure darwin64-arm64-cc --prefix=$WORK_PATH"/openssl-darwin-arm64" no-asm
 
 make
 make install
@@ -346,7 +358,10 @@ int main(int argc, const char * argv[]) {
 Compile with command line:
 
 ```bash
-clang++ -g Verifier.cpp main.cpp -o main -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
+clang++ -g Verifier.cpp main.cpp -o main -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11
 ```
 
 Rut test:
@@ -363,7 +378,10 @@ File verify failed
 ### Compile Static Library
 
 ```bash
-clang++ -g -c Verifier.cpp -o verifier.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
+clang++ -g -c Verifier.cpp -o verifier.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation
 
 libtool -static -o libverifier.a *.o openssl/libssl.a openssl/libcrypto.a
 ```
@@ -371,11 +389,15 @@ libtool -static -o libverifier.a *.o openssl/libssl.a openssl/libcrypto.a
 Here we generate static libraries for iOS and iOS simulator for `Verifier.cpp`, then we can use them in other projects without copy source code:
 
 ```bash
+cd ~/workspace/TestOpenssl/TestOpenssl
+export WORK_PATH=$(pwd)
+
 # iOS
 # Check SDK path
 xcrun -sdk iphoneos --show-sdk-path
+export SDK_PATH=$(xcrun -sdk iphoneos --show-sdk-path)
 
-clang++ -g -c Verifier.cpp -o verifier-iOS.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneOS.platform/Developer/SDKs/iPhoneOS17.0.sdk
+clang++ -g -c Verifier.cpp -o verifier-iOS.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation -arch arm64 -mios-version-min=7.0.0 -fno-common -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 
@@ -383,10 +405,9 @@ libtool -static -o libverifier-iOS.a *-iOS.o openssl/*-iOS.a
 # iOS Simulator
 # Check SDK path
 xcrun -sdk iphonesimulator --show-sdk-path
+export SDK_PATH=$(xcrun -sdk iphonesimulator --show-sdk-path)
 
-clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl/include -lssl -lcrypto -L /Users/tattoo/workspace/TestOpenssl/TestOpenssl/openssl -std=c++11 -lobjc -framework CoreFoundation -DIOS_PLATFORM=SIMULATOR64 -fno-common -isysroot /Applications/Xcode.app/Contents/Developer/Platforms/iPhoneSimulator.platform/Developer/SDKs/iPhoneSimulator17.0.sdk
+clang++ -g -c Verifier.cpp -o verifier-iossimulator.o -I $WORK_PATH/openssl/include -lssl -lcrypto -L $WORK_PATH/openssl -std=c++11 -lobjc -framework CoreFoundation -DIOS_PLATFORM=SIMULATOR64 -fno-common -isysroot $SDK_PATH
 
 libtool -static -o libverifier-iossimulator.a *-iossimulator.o openssl/*-iossimulator.a
 ```
-
-## 
